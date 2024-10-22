@@ -1,4 +1,4 @@
-import { clientRouter } from "./ClientRouter";
+import { clientRouter } from "./Router/ClientRouter";
 import { h, VNode } from "./Core/Snabbdom";
 import { component as _c } from "./Core/SnabbMitt";
 import { FactoryFunction, FactoryFunctionReturn, IView } from "./Core/SnabbMitt/types";
@@ -55,7 +55,7 @@ const Clock: FactoryFunction = ({ emitter, props }) => {
     const view: IView = ({ state, props }) => {
         return h("p",[h('h1', { hook }, [
             props.name,
-            ' => ',
+            '=>',
             h('span.hours', displayDigit(state.hours)),
             ':',
             h('span.minutes', displayDigit(state.minutes)),

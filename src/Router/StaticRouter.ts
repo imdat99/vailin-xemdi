@@ -267,7 +267,8 @@ export function createStaticRouter(
     //               static: dataRouterContext.static,
     // })
     let [match] = context.matches.slice(-1);
-    console.log("match: ", match.route)
+    console.log("hydrateScript: ", hydrateScript)
+    // console.log("match: ", match.route)
     // console.log("dataRouterContext: ", dataRouterContext, "state: ", state.matches, "fetchersContext: ", fetchersContext)
     // return (
     //   <>

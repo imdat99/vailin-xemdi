@@ -6,8 +6,8 @@ import { PassThrough } from 'stream';
 import { minifyJavaScript } from './Lib/Utils';
 import { App } from './App';
 import { createStaticHandler } from '@remix-run/router';
-import routeList from './Router';
-import {createStaticRouter, StaticRouterProvider} from './StaticRouter';
+import routeList from './Router/Router';
+import {createStaticRouter, StaticRouterProvider} from './Router/StaticRouter';
 export async function render(    event: H3Event<EventHandlerRequest>, styles: string[], listScript: string[]) {
     const { req } = event.node;
     let { query, dataRoutes } = createStaticHandler(routeList, {

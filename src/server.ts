@@ -12,7 +12,7 @@ import {
 import path from 'path';
 import fs from 'fs';
 import serveStatic from 'serve-static';
-
+import 'isomorphic-fetch';
 
 // const client = await createClient({ url: "rediss://red-crjrhhjtq21c73a5b7lg:3oQVTSdgID8csHRmLC0ovnC8BZC6AKcQ@singapore-redis.render.com:6379" })
 //   .on('error', err => console.log('Redis Client Error', err))

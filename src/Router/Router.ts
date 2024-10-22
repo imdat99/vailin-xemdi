@@ -9,7 +9,10 @@ const routeList: AgnosticRouteObject[] = [
                 index: true,
                 handle: () => {
                     return new Response('Hello, world!')
-                }
+                },
+                loader: async () => {
+                    return await fetch('https://jsonplaceholder.typicode.com/todos').then(r => r.json());
+                },
                 // path: 'home',
                 // loader: ({ request, params }) => { /* ... */ },
             },
