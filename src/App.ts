@@ -1,7 +1,7 @@
-import { clientRouter } from "./Router/ClientRouter";
 import { h, VNode } from "./Core/Snabbdom";
 import { component as _c } from "./Core/SnabbMitt";
 import { FactoryFunction, FactoryFunctionReturn, IView } from "./Core/SnabbMitt/types";
+import { navigateTo } from "./Router/ClientRouter";
 
 
 const Clock: FactoryFunction = ({ emitter, props }) => {
@@ -97,6 +97,12 @@ function Button({ emitter }: any): any {
 }
 
 export function App(): FactoryFunctionReturn {
+    if (typeof window !== 'undefined') {
+        // console.log("clientRouter: ", clientRouter);
+        // clientRouter.subscribe((e) => {
+        //     console.log(e);
+        // });
+    }
     function view() {
         return h('div', {
             attrs: {
@@ -107,8 +113,14 @@ export function App(): FactoryFunctionReturn {
             _c(Clock, { name: 'Clock 2', time: [5 ,20, 16] }),
             h('hr'),
             h('button', {on: {click: () => {
-                clientRouter.navigate('about');
-            }}}, 'Hello, world!'),
+                navigateTo('about');
+                // clientRouter.navigate('about');
+            }}}, 'about'),
+            h('button', {on: {click: () => {
+                console.log('back');
+                navigateTo('..');
+                // clientRouter.navigate('about');
+            }}}, 'back'),
             // _c(Clock, { name: 'Clock 3', time: [23, 59, 40] }),
         ]);
     }

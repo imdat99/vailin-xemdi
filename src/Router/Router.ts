@@ -1,3 +1,4 @@
+import { isClient } from '@/Lib/Utils';
 import { AgnosticRouteObject } from '@remix-run/router'
 
 const routeList: AgnosticRouteObject[] = [
@@ -10,20 +11,15 @@ const routeList: AgnosticRouteObject[] = [
                 handle: () => {
                     return new Response('Hello, world!')
                 },
-                loader: async () => {
-                    return await fetch('https://jsonplaceholder.typicode.com/todos').then(r => r.json());
-                },
+       
                 // path: 'home',
                 // loader: ({ request, params }) => { /* ... */ },
             },
             {
                 path: 'about',
-                loader: async function(){
-                    return new Promise((resolve) => {
-                        import('@/View/Pages/AboutUs').then((module) => {
-                            resolve(module.default as any);
-                        });
-                    })
+                loader: async (args, handlerCtx) => {
+                    
+                    return await fetch('https://jsonplaceholder.typicode.com/todos').then(r => r.json());
                 },
                 lazy: async () => ({
                     handle: (await import('@/View/Pages/AboutUs')).default,

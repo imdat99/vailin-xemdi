@@ -22,7 +22,7 @@ export async function render(    event: H3Event<EventHandlerRequest>, styles: st
         throw context
     }
     const router = createStaticRouter(dataRoutes, context)
-    StaticRouterProvider({ context, router, hydrate: true, nonce: "xemdi-nonce" })
+    const {hydrateScript} = StaticRouterProvider({ context, router, hydrate: true, nonce: "xemdi-nonce" })
     // router.
     // console.log("context: ",context, "dataRoutes: ", dataRoutes)
     // console.log({router, context, dataRoutes})
@@ -66,11 +66,13 @@ export async function render(    event: H3Event<EventHandlerRequest>, styles: st
         // Object.values(helmetContext.helmet).map((value) => value.toString()).filter(Boolean).join('') +
         '</head>';
     const bootstrapModules = listScript.filter((s) => s.includes('main')).map((s) => `<script type="module" src="${s}" async></script>`).join('');
+    const hydrateData = ["<script nonce=\"xemdi-nonce\">",hydrateScript,"</script>"].join('');
     // const stream = new ReadableStream();
     const body = new PassThrough();
     body.write(minifyJavaScript(header));
     body.write(minifyJavaScript(`<body>
          ${stringHtml}
+        ${hydrateData}
         ${bootstrapModules}
         </body>`));
     body.end('</html>');

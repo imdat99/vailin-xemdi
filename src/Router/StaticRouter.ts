@@ -169,53 +169,53 @@ export function createStaticRouter(
       hasErrorBoundary: route.hasErrorBoundary != null,
     };
   
-    if (route.handle) {
-    //   if (__DEV__) {
-    //     if (route.element) {
-    //       warning(
-    //         false,
-    //         "You should not include both `Component` and `element` on your route - " +
-    //           "`Component` will be used."
-    //       );
-    //     }
-    //   }
-    //   Object.assign(updates, {
-    //     element: React.createElement(route.Component),
-    //     Component: undefined,
-    //   });
+  /*  if (route.handle) {
+      // if (__DEV__) {
+      //   if (route.element) {
+      //     warning(
+      //       false,
+      //       "You should not include both `Component` and `element` on your route - " +
+      //         "`Component` will be used."
+      //     );
+      //   }
+      // }
+      Object.assign(updates, {
+        element: React.createElement(route.Component),
+        Component: undefined,
+      });
     }
   
-    // if (route.HydrateFallback) {
-    //   if (__DEV__) {
-    //     if (route.hydrateFallbackElement) {
-    //       warning(
-    //         false,
-    //         "You should not include both `HydrateFallback` and `hydrateFallbackElement` on your route - " +
-    //           "`HydrateFallback` will be used."
-    //       );
-    //     }
-    //   }
-    //   Object.assign(updates, {
-    //     hydrateFallbackElement: React.createElement(route.HydrateFallback),
-    //     HydrateFallback: undefined,
-    //   });
-    // }
+    if (route.HydrateFallback) {
+      if (__DEV__) {
+        if (route.hydrateFallbackElement) {
+          warning(
+            false,
+            "You should not include both `HydrateFallback` and `hydrateFallbackElement` on your route - " +
+              "`HydrateFallback` will be used."
+          );
+        }
+      }
+      Object.assign(updates, {
+        hydrateFallbackElement: React.createElement(route.HydrateFallback),
+        HydrateFallback: undefined,
+      });
+    }
   
-    // if (route.ErrorBoundary) {
-    //   if (__DEV__) {
-    //     if (route.errorElement) {
-    //       warning(
-    //         false,
-    //         "You should not include both `ErrorBoundary` and `errorElement` on your route - " +
-    //           "`ErrorBoundary` will be used."
-    //       );
-    //     }
-    //   }
-    //   Object.assign(updates, {
-    //     errorElement: React.createElement(route.ErrorBoundary),
-    //     ErrorBoundary: undefined,
-    //   });
-    // }
+    if (route.ErrorBoundary) {
+      if (__DEV__) {
+        if (route.errorElement) {
+          warning(
+            false,
+            "You should not include both `ErrorBoundary` and `errorElement` on your route - " +
+              "`ErrorBoundary` will be used."
+          );
+        }
+      }
+      Object.assign(updates, {
+        errorElement: React.createElement(route.ErrorBoundary),
+        ErrorBoundary: undefined,
+      });
+    }*/
   
     return updates;
   }
@@ -267,7 +267,16 @@ export function createStaticRouter(
     //               static: dataRouterContext.static,
     // })
     let [match] = context.matches.slice(-1);
-    console.log("hydrateScript: ", hydrateScript)
+    return {
+      basename: dataRouterContext.basename,
+      location: state.location,
+      navigationType: state.historyAction, 
+      navigator: dataRouterContext.navigator,
+      static: dataRouterContext.static,
+      hydrateScript,
+      match
+    }
+    // console.log("hydrateScript: ", hydrateScript)
     // console.log("match: ", match.route)
     // console.log("dataRouterContext: ", dataRouterContext, "state: ", state.matches, "fetchersContext: ", fetchersContext)
     // return (
