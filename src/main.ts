@@ -1,12 +1,12 @@
 import { matchRoutes } from "@remix-run/router";
 import { App } from "./App";
 import snabbmitt, { component as _c } from "./Core/SnabbMitt";
-import { createBrowserRoter } from "./Router/ClientRouter";
-import routeList from "./Router/Router";
+import { createBrowserRoter } from "./Core/Router/ClientRouter";
+import routeList from "./Router";
 import './style.css'
 const render = () => {
     createBrowserRoter(routeList)
-    // subscribe(console.log);
+    .subscribe(console.log);
     const { hydrate } = snabbmitt();
     hydrate(document.getElementById('app')!, App);
 }

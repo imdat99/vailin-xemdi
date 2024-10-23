@@ -1,7 +1,9 @@
 import { h, VNode } from "./Core/Snabbdom";
 import { component as _c } from "./Core/SnabbMitt";
 import { FactoryFunction, FactoryFunctionReturn, IView } from "./Core/SnabbMitt/types";
-import { navigateTo } from "./Router/ClientRouter";
+import { navigateTo } from "./Core/Router/ClientRouter";
+import SWR from "./Core/SWR";
+import { isClient } from "./Lib/Utils";
 
 
 const Clock: FactoryFunction = ({ emitter, props }) => {
@@ -70,6 +72,16 @@ const Clock: FactoryFunction = ({ emitter, props }) => {
     };
 }
 function Button({ emitter }: any): any {
+    if(isClient) {
+        const subscribe = SWR<any>('/api/hello', (data: any) => fetch('https://jsonplaceholder.typicode.com/todos').then(r => r.json()), {
+            fallbackData: { name: 'loading...' },
+            revalidateOnWatch: false,
+            revalidateOnFocus: false
+        });
+        subscribe.watch((data) => {
+            console.log(data);
+        });
+    }
     function store() {
         const state = {
             count: 0

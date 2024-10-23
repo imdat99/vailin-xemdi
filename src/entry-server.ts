@@ -6,8 +6,9 @@ import { PassThrough } from 'stream';
 import { minifyJavaScript } from './Lib/Utils';
 import { App } from './App';
 import { createStaticHandler } from '@remix-run/router';
-import routeList from './Router/Router';
-import {createStaticRouter, StaticRouterProvider} from './Router/StaticRouter';
+import routeList from './Router';
+import {createStaticRouter, StaticRouterProvider} from './Core/Router/StaticRouter';
+import { hydrationNonceKey } from './Core/Router/Helper';
 export async function render(    event: H3Event<EventHandlerRequest>, styles: string[], listScript: string[]) {
     const { req } = event.node;
     let { query, dataRoutes } = createStaticHandler(routeList, {
@@ -66,19 +67,14 @@ export async function render(    event: H3Event<EventHandlerRequest>, styles: st
         // Object.values(helmetContext.helmet).map((value) => value.toString()).filter(Boolean).join('') +
         '</head>';
     const bootstrapModules = listScript.filter((s) => s.includes('main')).map((s) => `<script type="module" src="${s}" async></script>`).join('');
-    const hydrateData = ["<script nonce=\"xemdi-nonce\">",hydrateScript,"</script>"].join('');
+    const hydrateData = ["<script nonce=\"",hydrationNonceKey,"\">",hydrateScript,"</script>"].join('');
     // const stream = new ReadableStream();
     const body = new PassThrough();
     body.write(minifyJavaScript(header));
-    body.write(minifyJavaScript(`<body>
-         ${stringHtml}
-        ${hydrateData}
-        ${bootstrapModules}
-        </body>`));
+    body.write(minifyJavaScript(["<body>", stringHtml, hydrateData, bootstrapModules, "</body>"].join('')));
     body.end('</html>');
     setResponseHeader(event, 'content-type', 'text/html');
     return body;
-    // console.log(stringHtml)
 }
 
 async function createFetchRequest(event: H3Event<EventHandlerRequest>): Promise<Request> {

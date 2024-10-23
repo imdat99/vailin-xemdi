@@ -15,7 +15,8 @@ import {
     To,
     UNSAFE_invariant as invariant,
 } from "@remix-run/router";
-import { isRouteErrorResponse, MapRoutePropertiesFunction } from "@remix-run/router/utils";
+import { MapRoutePropertiesFunction } from "@remix-run/router/utils";
+import { htmlEscape, hydrationDataKey, serializeErrors } from "./Helper";
 
 export interface StaticRouterProviderProps {
   context: StaticHandlerContext;
@@ -254,7 +255,7 @@ export function createStaticRouter(
       // are properly escaped in the resulting string.  See:
       //   https://v8.dev/blog/cost-of-javascript-2019#json
       let json = htmlEscape(JSON.stringify(JSON.stringify(data)));
-      hydrateScript = `window.__staticRouterHydrationData = JSON.parse(${json});`;
+      hydrateScript = `window.${hydrationDataKey} = JSON.parse(${json});`;
     }
   
     let { state } = dataRouterContext.router;
@@ -355,46 +356,4 @@ export function createStaticRouter(
         );
       },
     };
-  }
-  const ESCAPE_LOOKUP: { [match: string]: string } = {
-    "&": "\\u0026",
-    ">": "\\u003e",
-    "<": "\\u003c",
-    "\u2028": "\\u2028",
-    "\u2029": "\\u2029",
-  };
-  
-  const ESCAPE_REGEX = /[&><\u2028\u2029]/g;
-  function htmlEscape(str: string): string {
-    return str.replace(ESCAPE_REGEX, (match) => ESCAPE_LOOKUP[match]);
-  }
-  function serializeErrors(
-    errors: StaticHandlerContext["errors"]
-  ): StaticHandlerContext["errors"] {
-    if (!errors) return null;
-    let entries = Object.entries(errors);
-    let serialized: StaticHandlerContext["errors"] = {};
-    for (let [key, val] of entries) {
-      // Hey you!  If you change this, please change the corresponding logic in
-      // deserializeErrors in react-router-dom/index.tsx :)
-      if (isRouteErrorResponse(val)) {
-        serialized[key] = { ...val, __type: "RouteErrorResponse" };
-      } else if (val instanceof Error) {
-        // Do not serialize stack traces from SSR for security reasons
-        serialized[key] = {
-          message: val.message,
-          __type: "Error",
-          // If this is a subclass (i.e., ReferenceError), send up the type so we
-          // can re-create the same type during hydration.
-          ...(val.name !== "Error"
-            ? {
-                __subType: val.name,
-              }
-            : {}),
-        };
-      } else {
-        serialized[key] = val;
-      }
-    }
-    return serialized;
   }
