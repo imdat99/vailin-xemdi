@@ -4,11 +4,14 @@ import snabbmitt, { component as _c } from "./Core/SnabbMitt";
 import { createBrowserRoter } from "./Core/Router/ClientRouter";
 import routeList from "./Router";
 import './style.css'
+
+const { hydrate } = snabbmitt();
+
 const render = () => {
-    createBrowserRoter(routeList)
-    .subscribe(console.log);
-    const { hydrate } = snabbmitt();
-    hydrate(document.getElementById('app')!, App);
+    const routerProvider = createBrowserRoter(routeList);
+    hydrate(document.getElementById('app')!, App, {}, {
+        router: routerProvider
+    })
 }
 // Determine if any of the initial routes are lazy
 const lazyMatches = matchRoutes(routeList, window.location)?.filter(
@@ -22,7 +25,6 @@ if (typeof window === 'object' && lazyMatches && lazyMatches?.length > 0) {
         lazyMatches.map(async (m) => {
             if (m.route.lazy) {
                 const routeModule = await m.route.lazy()
-                console.log("routeModule: ", routeModule)
                 Object.assign(m.route, {
                     ...routeModule,
                     lazy: undefined,

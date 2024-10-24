@@ -7,21 +7,21 @@ const routeList: AgnosticRouteObject[] = [
         children: [
             {
                 index: true,
-                handle: () => {
-                    return new Response('Hello, world!')
-                },
+                lazy: async () => ({
+                    handle: (await import('View/Pages/AboutUs1')).default,
+                }),
        
                 // path: 'home',
                 // loader: ({ request, params }) => { /* ... */ },
             },
             {
                 path: 'about',
-                loader: async (args, handlerCtx) => {
+                // loader: async (args, handlerCtx) => {
                     
-                    return await fetch('https://jsonplaceholder.typicode.com/todos').then(r => r.json());
-                },
+                //     return await fetch('https://jsonplaceholder.typicode.com/todos').then(r => r.json());
+                // },
                 lazy: async () => ({
-                    handle: (await import('@/View/Pages/AboutUs')).default,
+                    handle: (await import('View/Pages/AboutUs')).default,
                 }),
                 children: [
                     {

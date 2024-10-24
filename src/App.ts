@@ -4,9 +4,10 @@ import { FactoryFunction, FactoryFunctionReturn, IView } from "./Core/SnabbMitt/
 import { navigateTo } from "./Core/Router/ClientRouter";
 import SWR from "./Core/SWR";
 import { isClient } from "./Lib/Utils";
+import Outlet from "Core/Router/Component";
 
 
-const Clock: FactoryFunction = ({ emitter, props }) => {
+const Clock: FactoryFunction = ({ emitter, props, context }) => {
     function store() {
         const state = {
             hours: props.time ? props.time[0] : 0,
@@ -54,6 +55,7 @@ const Clock: FactoryFunction = ({ emitter, props }) => {
         return digit;
     }
 
+    // console.log('context: ', context);
     const view: IView = ({ state, props }) => {
         return h("p",[h('h1', { hook }, [
             props.name,
@@ -79,7 +81,7 @@ function Button({ emitter }: any): any {
             revalidateOnFocus: false
         });
         subscribe.watch((data) => {
-            console.log(data);
+           
         });
     }
     function store() {
@@ -115,7 +117,9 @@ export function App(): FactoryFunctionReturn {
         //     console.log(e);
         // });
     }
-    function view() {
+    function view({context}: any): VNode {
+        // console.log('context: ', context);
+
         return h('div', {
             attrs: {
                 id: 'app'
@@ -133,6 +137,7 @@ export function App(): FactoryFunctionReturn {
                 navigateTo('..');
                 // clientRouter.navigate('about');
             }}}, 'back'),
+            _c(Outlet)
             // _c(Clock, { name: 'Clock 3', time: [23, 59, 40] }),
         ]);
     }

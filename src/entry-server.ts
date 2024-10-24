@@ -1,6 +1,6 @@
 import { EventHandlerRequest, getRequestProtocol, H3Event, readBody, setResponseHeader } from 'h3';
 import RenderToString from "./Core/RenderToString";
-import { component } from "./Core/SnabbMitt";
+import { component, createSSR } from "./Core/SnabbMitt";
 import { defaultTheme, storageThemeKey } from './Lib/Constants';
 import { PassThrough } from 'stream';
 import { minifyJavaScript } from './Lib/Utils';
@@ -23,14 +23,17 @@ export async function render(    event: H3Event<EventHandlerRequest>, styles: st
         throw context
     }
     const router = createStaticRouter(dataRoutes, context)
-    const {hydrateScript} = StaticRouterProvider({ context, router, hydrate: true, nonce: "xemdi-nonce" })
+    const {hydrateScript, match} = StaticRouterProvider({ context, router, hydrate: true, nonce: "xemdi-nonce" })
+    // console.log("matchRoutes: ", component(match.route.handle))
     // router.
     // console.log("context: ",context, "dataRoutes: ", dataRoutes)
     // console.log({router, context, dataRoutes})
     // dataRoutes.forEach((r) => {
     //     r.lazy?.().then((m) => console.log(m().view()))
     // })
-    const stringHtml = RenderToString(component(App))
+    // console.log("match: ", context.matches)
+    // console.log("dataRoutes: ", dataRoutes)
+    const stringHtml = RenderToString(createSSR(App, {}, { router: {state: context} }))
     const cookies: Record<string, string> =
         req.headers.cookie
             ?.split('; ')

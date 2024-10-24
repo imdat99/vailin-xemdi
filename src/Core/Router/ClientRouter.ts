@@ -1,4 +1,4 @@
-import mitt from '@/Core/Mitt'
+import mitt from 'Core/Mitt'
 import {
     AgnosticRouteObject,
     createBrowserHistory,

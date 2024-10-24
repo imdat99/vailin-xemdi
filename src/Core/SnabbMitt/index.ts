@@ -12,14 +12,13 @@ import {
     init
 } from '../Snabbdom'
 import { component as _c } from './component'
-import instanceComponent from './instance'
+import instanceComponent, { globalContext } from './instance'
 import { Args, IFactory, PatchFunction } from './types'
 // import { init } from 'snabbdom'
 // import { styleModule } from '../OverWrite/SnabbStyle'
 
 // const { instanceComponent, component } = require('./lib/component');
-let defaultPatch: PatchFunction
-
+let defaultPatch: PatchFunction;
 function defineArgs(args: Args) {
     let props: Props = {}
     let children: VNodeChildren | Args['1'] | Args['0'] = []
@@ -32,7 +31,7 @@ function defineArgs(args: Args) {
             props = args[0] as Props
         }
     }
-    return [props, children]
+    return [props, children, globalContext]
 }
 
 function snabbmitt(...args: Args) {
@@ -61,32 +60,36 @@ function snabbmitt(...args: Args) {
     }
 
     return {
-        run(container: HTMLElement | VNode, factory: IFactory, props = {}) {
-            const instance = instanceComponent(patch, container, factory, props)
-            return instance.render({ usePatch: true, props })
+        run(container: HTMLElement | VNode, factory: IFactory, props = {}, context = {}) {
+            const instance = instanceComponent(patch, container, factory, props, context)
+            instance.render({ usePatch: false, props, context })
         },
         component(factory: IFactory, ...args: Array<Props>) {
             return _c(patch, factory, ...defineArgs(args as any))
         },
-        hydrate(container: HTMLElement, factory: IFactory, props = {}) {
-            console.log("vnode", toVNode(container))
+        hydrate(container: HTMLElement, factory: IFactory, props = {}, context = {}) {
             const instance = instanceComponent(
                 patch,
                 toVNode(container),
                 factory,
-                props
+                props,
+                context
             )
-            patch(container, instance.render({ usePatch: false, props }))
+            patch(container, instance.render({ usePatch: false, props, context }))
         }
     }
 }
-
+function createSSR(factory: IFactory, props = {}, context = {}) {
+    const instance = instanceComponent(defaultPatch, null, factory, props, context)
+    return instance.render({ usePatch: false, props, context })
+}
 function component(
     factory: IFactory,
     ...args: Array<Props>
 ): VNode {
-    return _c(defaultPatch, factory, ...defineArgs(args as any))
+    const a = defineArgs(args as any)
+    return _c(defaultPatch, factory, ...a)
 }
-export { component }
+export { component, createSSR }
 
 export default snabbmitt

@@ -29,7 +29,8 @@
     "h3": "^1.13.0",
     "isomorphic-fetch": "^3.0.0",
     "parse-sel": "^1.0.0",
-    "serve-static": "^1.16.2"
+    "serve-static": "^1.16.2",
+    "vite-tsconfig-paths": "^5.0.1"
   },
   "prettier": {
     "semi": false,

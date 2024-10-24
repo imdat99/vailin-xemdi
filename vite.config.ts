@@ -1,6 +1,6 @@
 import path from "path"
 import { UserConfig, defineConfig } from 'vite'
-
+import tsConfigPaths from 'vite-tsconfig-paths'
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => {
     if (command === 'build') {
@@ -23,6 +23,7 @@ export default defineConfig(({ command }) => {
 
 const devConfig: UserConfig = {
     plugins: [
+        tsConfigPaths(),
         // react(),
         // cssInjectedByJsPlugin()
     ],
